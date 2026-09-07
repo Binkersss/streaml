@@ -27,6 +27,27 @@ let bytes = [|
   3.0 *. 8.0 *. float_of_int stream_array_size
 |]
 *)
+let m = 20
+
+let mysecond () = Unix.gettimeofday()
+let checktick () =
+    let timesfound = Array.make m 0.0 in
+
+    for i = 0 to m -1 do
+        let t1 = mysecond () in
+        let t2 = ref t1 in
+        while !t2 -. t1 < 1.0e-6 do
+            t2 := mysecond ()
+        done;
+        timesfound.(i) <- !t2
+    done;
+
+    let delta = ref 0 in
+    let minDelta = ref 1_000_000 in
+    for i = 1 to m - 1 do
+        delta := int_of_float (1.0e6 *. (timesfound.(i) -. timesfound.(i - 1)));
+        minDelta := min !delta !minDelta
+    done;
 
 
 
@@ -59,5 +80,3 @@ let main () =
   done;
 
   Printf.printf "%s" hline
-
-let () = main ()
