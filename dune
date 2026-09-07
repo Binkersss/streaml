@@ -1,0 +1,3 @@
+(executable
+ (name      streaml)
+ (libraries unix bigarray))
