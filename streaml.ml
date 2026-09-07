@@ -46,10 +46,9 @@ let checktick () =
     let minDelta = ref 1_000_000 in
     for i = 1 to m - 1 do
         delta := int_of_float (1.0e6 *. (timesfound.(i) -. timesfound.(i - 1)));
-        minDelta := min !delta !minDelta
+        minDelta := min !minDelta (max !delta 0)
     done;
-
-
+    !minDelta
 
 let main () =
   Printf.printf "%s" hline;
