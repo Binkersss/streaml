@@ -1,3 +1,6 @@
+(* StreamL — an OCaml port of the STREAM benchmark.
+   Original C version: Copyright 1991-2013 John D. McCalpin.
+   See LICENSE for full terms. *)
 let stream_array_size = 60_000_000
 let offset = 0
 let ntimes            = 10
