@@ -1,47 +1,78 @@
 # StreaML
 
-An OCaml port of the [STREAM](https://www.cs.virginia.edu/stream/) benchmark. Original C version: Copyright 1991-2013 John D. McCalpin. See LICENSE for full terms.
+An OCaml port of the [STREAM](https://www.cs.virginia.edu/stream/) benchmark.
+Original C version: Copyright 1991-2013 John D. McCalpin. See LICENSE for full
+terms.
 
-**This is an unofficial variant, not official STREAM benchmark
-results.** Per the original STREAM license, results from this
-implementation should be described as "based on a variant of the
-STREAM benchmark" rather than "STREAM benchmark results."
+**This is an unofficial variant, not official STREAM benchmark results.** Per
+the original STREAM license, results from this implementation should be
+described as "based on a variant of the STREAM benchmark" rather than "STREAM
+benchmark results."
+
+## STRATA ONLY
+
+```
+# go to the STRATA-5.5.0 repo
+opam switch create STRATA-5.5.0 --empty
+opam switch set my-switch
+
+eval "$(opam env)"
+
+# configure ocaml with libnuma to install into the switch
+LIBS="-lnuma" LDFLAGS="-lnuma" ./configure --prefix="$(opam var prefix)"
+
+# build ocaml
+make -j
+
+# install into the switch
+opam install opam-custom-install
+opam custom-install ocaml-variants -- make install
+```
+
+It's up to the gods on whether this will really work. If you have trouble
+getting the custom OCaml runtime/compiler into your environment, let me know.
+
+Run the benchmark like this:
+
+```
+for m in 0 1 2 3 4 5 6 7; do
+    STREAM_FAR=$m dune exec ./streaml.exe | grep '^CSV'
+done > far.csv
+```
 
 ## Usage
 
 ### Building
 
-```bash
+```````
 dune build
-```
+```````
 
 ### Running
 
-```bash
+```````
 dune exec ./streaml.exe
-```
+```````
 
 or, if you build a release/optimized profile:
 
-```bash
+```````
 dune exec ./streaml.exe --profile release
-```
+```````
 
 ## Configuration
 
-Array size and iteration count are set as constants at the top of
-`streaml.ml`:
+Array size and iteration count are set as constants at the top of `streaml.ml`:
 
-```ocaml
+````````
 let stream_array_size = 60_000_000  (* elements per array *)
 let ntimes            = 10          (* kernel repetitions *)
-```
+````````
 
-Edit these and rebuild (`dune build`) to change the benchmark's
-memory footprint or iteration count. As with the original STREAM,
-each array should be sized to at least ~4x your machine's
-last-level cache to get a valid bandwidth measurement rather than
-cache effects.
+Edit these and rebuild (`dune build`) to change the benchmark's memory footprint
+or iteration count. As with the original STREAM, each array should be sized to
+at least ~4x your machine's last-level cache to get a valid bandwidth
+measurement rather than cache effects.
 
 ## Sample output
 
